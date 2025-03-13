@@ -1,13 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Container from "../../components/container";
 import logoImg from "../../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import Input from "../../components/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "../../services/supabaseConnection";
 
 // Criando validação com zod
 const schema = z.object({
+  name: z.string().nonempty("O campo nome é obrigatório"),
   email: z
     .string()
     .email("Insira um Email Válido")
@@ -17,10 +20,27 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-function onSubmit(data: FormData) {
-  console.log(data);
-}
 const Register = () => {
+  const navigate = useNavigate();
+
+  async function onSubmit(data: FormData) {
+    const response = await supabase.auth
+      .signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            display_name: data.name,
+          },
+        },
+      })
+      .then(() => {
+        navigate("/dashboard", { replace: true });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
   const {
     register,
     handleSubmit,
@@ -42,8 +62,8 @@ const Register = () => {
           <Input
             name="name"
             placeholder="Digite o seu nome completo"
-            type="email"
-            error={errors.email?.message}
+            type="text"
+            error={errors.name?.message}
             register={register}
           />
           <Input

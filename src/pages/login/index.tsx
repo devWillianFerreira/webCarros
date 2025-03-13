@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Container from "../../components/container";
 import logoImg from "../../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { supabase } from "../../services/supabaseConnection";
 
 // Criando validação com zod
 const schema = z.object({
@@ -17,10 +19,35 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-function onSubmit(data: FormData) {
-  console.log(data);
-}
 const Login = () => {
+  const navigate = useNavigate();
+  async function onSubmit(data: FormData) {
+    try {
+      // Recebendo as informações do usuário e colocando no data
+      const { data: signInData, error } =
+        await supabase.auth.signInWithPassword({
+          email: data.email,
+          password: data.password,
+        });
+
+      if (error) {
+        // Exibe mensagem de erro caso algo dê errado
+        console.error("Erro na autenticação:", error.message);
+        alert(
+          "Falha na autenticação. Verifique suas credenciais e tente novamente."
+        );
+        return;
+      }
+
+      if (signInData.user) {
+        // Redireciona o usuário para o dashboard somente se ele foi autenticado com sucesso
+        navigate("/dashboard", { replace: true });
+      }
+    } catch {
+      alert("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+    }
+  }
+
   const {
     register,
     handleSubmit,
