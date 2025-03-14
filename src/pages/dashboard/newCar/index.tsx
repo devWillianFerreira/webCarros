@@ -1,7 +1,9 @@
+import DashboardHeader from "../../../components/panelHeader";
+
 const NewCar = () => {
   return (
     <div>
-      <h1>Pagiona de novo carro</h1>
+      <DashboardHeader />
     </div>
   );
 };
