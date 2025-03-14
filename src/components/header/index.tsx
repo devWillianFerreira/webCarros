@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import logoImg from "../../assets/logo.svg";
 import { LogInIcon, User } from "lucide-react";
+import { useContext } from "react";
+import { authContext } from "../../context/authContext";
 
 const Header = () => {
-  const signed = true;
-  const loadingAuth = false;
+  const { signed, LoadingAuth } = useContext(authContext);
 
   return (
     <div className="flex w-full justify-center h-16 items-center bg-white drop-shadow mb-4">
@@ -12,7 +13,7 @@ const Header = () => {
         <Link to="/">
           <img src={logoImg} alt="webCarros" />
         </Link>
-        {!loadingAuth && signed && (
+        {!LoadingAuth && signed && (
           <Link
             to="/dashboard"
             className="border-2 rounded-full border-gray-900 p-1"
@@ -21,7 +22,7 @@ const Header = () => {
           </Link>
         )}
 
-        {!loadingAuth && !signed && (
+        {!LoadingAuth && !signed && (
           <Link to="/login">
             <LogInIcon size={26} />
           </Link>

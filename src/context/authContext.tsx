@@ -9,11 +9,6 @@ type AuthContextData = {
 interface authProvideProps {
   children: ReactNode;
 }
-interface userProps {
-  uid: string;
-  name: string | null;
-  email: string | null;
-}
 
 export const authContext = createContext({} as AuthContextData);
 
@@ -22,7 +17,7 @@ function AuthProvider({ children }: authProvideProps) {
   const [LoadingAuth, setLoadingAuth] = useState(true);
   useEffect(() => {
     // Atualiza o estado quando ocorrer uma mudança na autenticação
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         setUser(session.user); // Salva os dados do usuário no estado
         setLoadingAuth(false);

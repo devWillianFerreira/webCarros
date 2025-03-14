@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "../../services/supabaseConnection";
+import { useEffect } from "react";
 
 // Criando validação com zod
 const schema = z.object({
@@ -21,6 +22,12 @@ type FormData = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    async function handleLogout() {
+      await supabase.auth.signOut();
+    }
+    handleLogout();
+  }, []);
   async function onSubmit(data: FormData) {
     try {
       // Recebendo as informações do usuário e colocando no data
