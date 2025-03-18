@@ -14,10 +14,7 @@ const Header = () => {
           <img src={logoImg} alt="webCarros" />
         </Link>
         {!LoadingAuth && signed && (
-          <Link
-            to="/dashboard"
-            className="border-2 rounded-full border-gray-900 p-1"
-          >
+          <Link to="/dashboard">
             <User size={26} />
           </Link>
         )}
