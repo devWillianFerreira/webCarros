@@ -1,12 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import Container from "../../components/container";
 import logoImg from "../../assets/logo.svg";
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "../../services/supabaseConnection";
+import { useContext } from "react";
+import { authContext } from "../../context/authContext";
 
 // Criando validação com zod
 const schema = z.object({
@@ -20,11 +22,14 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
+
+
 const Register = () => {
+  const {handleInfoUser}= useContext(authContext)
   const navigate = useNavigate();
 
   async function onSubmit(data: FormData) {
-    const response = await supabase.auth
+    await supabase.auth
       .signUp({
         email: data.email,
         password: data.password,
@@ -34,8 +39,20 @@ const Register = () => {
           },
         },
       })
-      .then(() => {
-        navigate("/dashboard", { replace: true });
+      .then(({ data: { user }, error }) => {
+        if (error) {
+          console.error("Erro ao cadastrar:", error);
+          return;
+        }
+  
+        if (user) {
+          handleInfoUser({
+            name: data.name,
+            email: data.email,
+            id: user.id, // Obtém o UID corretamente
+          });
+          navigate("/dashboard", { replace: true });
+        }
       })
       .catch((error) => {
         console.log(error);
