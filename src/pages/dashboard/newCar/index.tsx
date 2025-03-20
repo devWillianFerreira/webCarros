@@ -42,6 +42,7 @@ const NewCar = () => {
     uid: string;
     name: string;
     previewUrl: string;
+    url: string;
   }
   const [carImages, setCarImage] = useState<carImageProps[]>([]);
 
@@ -72,10 +73,12 @@ const NewCar = () => {
         upsert: false, // Evita sobrescrever arquivos existentes
       })
       .then(() => {
+        const urlImage = supabase.storage.from("images").getPublicUrl(filePath);
         const imageItem = {
           name: uidImage,
           uid: uidImage,
           previewUrl: URL.createObjectURL(image),
+          url: urlImage.data.publicUrl,
         };
         setCarImage((images) => [...images, imageItem]);
       });
