@@ -1,11 +1,11 @@
-import { Upload } from "lucide-react";
+import { Trash, Upload } from "lucide-react";
 import DashboardHeader from "../../../components/panelHeader";
 import Container from "../../../components/container";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "../../../components/input";
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useState } from "react";
 import { authContext } from "../../../context/authContext";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../../../services/supabaseConnection";
@@ -38,6 +38,12 @@ const NewCar = () => {
     resolver: zodResolver(schema),
     mode: "onChange",
   });
+  interface carImageProps {
+    uid: string;
+    name: string;
+    previewUrl: string;
+  }
+  const [carImages, setCarImage] = useState<carImageProps[]>([]);
 
   async function handleFile(e: ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files[0]) {
@@ -52,25 +58,38 @@ const NewCar = () => {
 
   async function handleUploadFile(image: File) {
     if (!user?.id) {
+      console.error("Usuário não autenticado!");
       return;
     }
+
     const currentId = user.id;
     const uidImage = uuidv4();
     const filePath = `${currentId}/${uidImage}`;
 
-    const { data, error } = await supabase.storage
+    await supabase.storage
       .from("images") // Substitua pelo nome do bucket
       .upload(filePath, image, {
-        // Controla o cache
         upsert: false, // Evita sobrescrever arquivos existentes
+      })
+      .then(() => {
+        const imageItem = {
+          name: uidImage,
+          uid: uidImage,
+          previewUrl: URL.createObjectURL(image),
+        };
+        setCarImage((images) => [...images, imageItem]);
       });
+  }
 
-    if (error) {
-      console.error("Erro ao fazer upload:", error.message);
-      return;
-    }
+  async function handleDeleteImage(item: carImageProps) {
+    const userId = user?.id;
 
-    console.log("Arquivo enviado com sucesso:", data.path);
+    const uidImage = item.uid;
+    const filePath = `${userId}/${uidImage}`;
+    await supabase.storage.from("images").remove([filePath]);
+    setCarImage(
+      carImages.filter((image) => image.previewUrl != item.previewUrl)
+    );
   }
 
   function onSubmit(data: formData) {
@@ -95,6 +114,23 @@ const NewCar = () => {
               />
             </div>
           </button>
+          {carImages.map((item) => (
+            <div
+              key={item.name}
+              className="w-full h-32 flex justify-center items-center relative"
+            >
+              <button
+                className="absolute cursor-pointer"
+                onClick={() => handleDeleteImage(item)}
+              >
+                <Trash size={28} color="white" />
+              </button>
+              <img
+                src={item.previewUrl}
+                className="rounded-lg w-full h-32 object-cover"
+              />
+            </div>
+          ))}
         </div>
       </div>
       <div className="w-full bg-white p-3 rounded-lg flex flex-col sm:flex-row items-center gap-2 mt-2">
