@@ -34,6 +34,7 @@ const NewCar = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<formData>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -95,8 +96,42 @@ const NewCar = () => {
     );
   }
 
-  function onSubmit(data: formData) {
-    console.log(data);
+  async function onSubmit(data: formData) {
+    //Verificando se possui alguma imagem no
+    if (carImages.length === 0) {
+      alert("Imagens são obrigatórias para cadastro de um carro");
+      return;
+    }
+
+    const carListImage = carImages.map((car) => {
+      return {
+        uid: car.uid,
+        name: car.name,
+        url: car.url,
+      };
+    });
+    const newCar = {
+      id: uuidv4(),
+      ...data,
+      owner: user?.name,
+      uidUser: user?.id,
+      images: carListImage,
+    };
+    try {
+      const { error } = await supabase.from("car").insert(newCar);
+
+      if (error) {
+        console.error("Erro ao cadastrar o carro:", error.message);
+        alert("Erro ao cadastrar o carro!");
+      } else {
+        reset();
+        alert("Carro cadastrado com sucesso!");
+        setCarImage([]);
+      }
+    } catch (error) {
+      console.error("Erro inesperado:", error);
+      alert("Erro inesperado ao cadastrar o carro!");
+    }
   }
 
   return (
