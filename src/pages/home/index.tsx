@@ -22,6 +22,7 @@ const Home = () => {
   }
 
   const [cars, setCars] = useState<carsProps[]>([]);
+  const [loadImagesCar, setLoadImagesCar] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchCars() {
@@ -48,6 +49,9 @@ const Home = () => {
     }
     fetchCars();
   }, []);
+  function handleImagesLoad(id: string) {
+    setLoadImagesCar((images) => [...images, id]);
+  }
   return (
     <Container>
       <section className="max-w-3xl w-full bg-white mx-auto flex p-4 rounded-lg justify-center items-center gap-2">
@@ -66,10 +70,20 @@ const Home = () => {
         {cars.map((item) => (
           <Link key={item.id} to={`/carDetail/${item.id}`}>
             <section className="w-full bg-white rounded-lg">
+              <div
+                className="w-full h-72 rounded-lg bg-slate-300"
+                style={{
+                  display: loadImagesCar.includes(item.id) ? "none" : "block",
+                }}
+              ></div>
               <img
                 src={item.images[0].url}
                 alt="Carro"
                 className="w-full max-h-72 mb-2 rounded-lg hover:scale-105 transition-all"
+                onLoad={() => handleImagesLoad(item.id)}
+                style={{
+                  display: loadImagesCar.includes(item.id) ? "block" : "none",
+                }}
               />
               <p className="font-bold mt-1 mb-2 px-2">{item.name}</p>
               <div className="flex flex-col px-2">
