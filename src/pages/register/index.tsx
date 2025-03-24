@@ -1,4 +1,3 @@
-
 import Container from "../../components/container";
 import logoImg from "../../assets/logo.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "../../services/supabaseConnection";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { authContext } from "../../context/authContext";
 
 // Criando validação com zod
@@ -22,11 +21,16 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-
-
 const Register = () => {
-  const {handleInfoUser}= useContext(authContext)
+  const { handleInfoUser } = useContext(authContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function handleLogout() {
+      await supabase.auth.signOut();
+    }
+    handleLogout();
+  }, []);
 
   async function onSubmit(data: FormData) {
     await supabase.auth
@@ -44,7 +48,7 @@ const Register = () => {
           console.error("Erro ao cadastrar:", error);
           return;
         }
-  
+
         if (user) {
           handleInfoUser({
             name: data.name,
