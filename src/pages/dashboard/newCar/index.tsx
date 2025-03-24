@@ -69,15 +69,15 @@ const NewCar = () => {
     const filePath = `${currentId}/${uidImage}`;
 
     await supabase.storage
-      .from("images") // Substitua pelo nome do bucket
+      .from("images")
       .upload(filePath, image, {
-        upsert: false, // Evita sobrescrever arquivos existentes
+        upsert: false,
       })
       .then(() => {
         const urlImage = supabase.storage.from("images").getPublicUrl(filePath);
         const imageItem = {
           name: uidImage,
-          uid: uidImage,
+          uid: currentId,
           previewUrl: URL.createObjectURL(image),
           url: urlImage.data.publicUrl,
         };

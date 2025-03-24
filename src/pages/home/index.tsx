@@ -1,6 +1,53 @@
+import { useEffect, useState } from "react";
 import Container from "../../components/container";
+import { supabase } from "../../services/supabaseConnection";
+import { Link } from "react-router-dom";
 
 const Home = () => {
+  interface carsProps {
+    id: string;
+    name: string;
+    year: string;
+    model: string;
+    km: string;
+    price: string;
+    city: string;
+    images: imageCarsProps[];
+  }
+
+  interface imageCarsProps {
+    uid: string;
+    name: string;
+    url: string;
+  }
+
+  const [cars, setCars] = useState<carsProps[]>([]);
+
+  useEffect(() => {
+    async function fetchCars() {
+      // Recebendo todos os items da tabela car, do database
+      const { data } = await supabase.from("car").select("*");
+      // Definindo as propriedas que serão salvas em uma nova const
+      const newCar: carsProps[] =
+        data?.map((car) => ({
+          id: car.id,
+          name: car.name,
+          model: car.model,
+          year: car.year,
+          km: car.km,
+          price: car.price,
+          city: car.city,
+          images: car.images.map((imagesCar: any) => ({
+            uid: imagesCar.uid,
+            name: imagesCar.name,
+            url: imagesCar.url,
+          })),
+        })) || [];
+      setCars(newCar);
+      console.log(newCar);
+    }
+    fetchCars();
+  }, []);
   return (
     <Container>
       <section className="max-w-3xl w-full bg-white mx-auto flex p-4 rounded-lg justify-center items-center gap-2">
@@ -16,24 +63,28 @@ const Home = () => {
         Carros novos e usados em todo o Brasil
       </h1>
       <main className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <section className="w-full bg-white rounded-lg">
-          <img
-            src="https://image.webmotors.com.br/_fotos/anunciousados/gigante/2025/202501/20250124/audi-q5-2.0-55-tfsie-phev-performance-quattro-s-tronic-wmimagem21402243326.jpg?s=fill&w=552&h=414&q=60"
-            alt="Carro"
-            className="w-full max-h-72 mb-2 rounded-lg hover:scale-105 transition-all"
-          />
-          <p className="font-bold mt-1 mb-2 px-2">JAGUAR F-PACE</p>
-          <div className="flex flex-col px-2">
-            <span className="text-zinc-700 mb-6">
-              Ano 2016/2017 | 25.000 Km
-            </span>
-            <strong className="text-black text-xl">R$ 230.00,00</strong>
-          </div>
-          <div className="w-full h-px bg-slate-200 my-2"></div>
-          <div className="px-2 pb-2 ">
-            <span className="text-zinc-700">Mauá - São Paulo</span>
-          </div>
-        </section>
+        {cars.map((item) => (
+          <Link key={item.id} to={`/carDetail/${item.id}`}>
+            <section className="w-full bg-white rounded-lg">
+              <img
+                src={item.images[0].url}
+                alt="Carro"
+                className="w-full max-h-72 mb-2 rounded-lg hover:scale-105 transition-all"
+              />
+              <p className="font-bold mt-1 mb-2 px-2">{item.name}</p>
+              <div className="flex flex-col px-2">
+                <span className="text-zinc-700 mb-6">
+                  Ano {item.year} | {item.km} KM
+                </span>
+                <strong className="text-black text-xl">R$ {item.price}</strong>
+              </div>
+              <div className="w-full h-px bg-slate-200 my-2"></div>
+              <div className="px-2 pb-2 ">
+                <span className="text-zinc-700">{item.city}</span>
+              </div>
+            </section>
+          </Link>
+        ))}
       </main>
     </Container>
   );
