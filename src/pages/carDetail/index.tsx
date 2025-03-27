@@ -3,6 +3,7 @@ import Container from "../../components/container";
 import { useEffect, useState } from "react";
 import { supabase } from "../../services/supabaseConnection";
 import { Phone } from "lucide-react";
+import Slider from "react-slick";
 
 interface carProps {
   id: string;
@@ -27,8 +28,57 @@ interface imageCarsProps {
 
 const CarDetail = () => {
   const { id } = useParams();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [car, setCar] = useState<carProps>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [slidesPerView, setSlidesPerView] = useState<number>(2);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const CustomPrevArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          background: "red",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: isMobile ? "50px" : "50px",
+          height: isMobile ? "50px" : "50px",
+          borderRadius: "50%",
+          marginLeft: isMobile ? "20px" : "none",
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+  const CustomNextArrow = (props: any) => {
+    const { className, style, onClick } = props;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          background: "red",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: isMobile ? "50px" : "50px",
+          height: isMobile ? "50px" : "50px",
+          borderRadius: "50%",
+          marginRight: isMobile ? "20px" : "none",
+        }}
+        onClick={onClick}
+      />
+    );
+  };
 
   useEffect(() => {
     async function loadCar() {
@@ -66,9 +116,39 @@ const CarDetail = () => {
     loadCar();
   }, [id]);
 
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth < 720) {
+        setIsMobile(window.innerWidth < 720);
+        setSlidesPerView(1);
+      } else {
+        setSlidesPerView(2);
+      }
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: slidesPerView,
+    slidesToScroll: 1,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
+  };
   return (
     <Container>
-      <h1>Slider</h1>
+      <Slider {...settings} className="mb-6">
+        {car?.images.map((image) => (
+          <img src={image.url} className="w-full h-96" key={image.name} />
+        ))}
+      </Slider>
       {car && (
         <main className="w-full bg-white rounded-lg p-6 my-4">
           <div className="flex flex-col items-center   sm:flex-row mb-4 justify-between font-bold text-3xl text-black ">
