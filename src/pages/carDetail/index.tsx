@@ -29,20 +29,18 @@ interface imageCarsProps {
 const CarDetail = () => {
   const { id } = useParams();
   const [car, setCar] = useState<carProps>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [slidesPerView, setSlidesPerView] = useState<number>(2);
   const [isMobile, setIsMobile] = useState(false);
 
   const CustomPrevArrow = (props: any) => {
     const { className, style, onClick } = props;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
     return (
       <div
         className={className}
         style={{
           ...style,
-          background: "red",
+          background: isMobile ? "none" : "red",
           color: "white",
           display: "flex",
           justifyContent: "center",
@@ -51,6 +49,7 @@ const CarDetail = () => {
           height: isMobile ? "50px" : "50px",
           borderRadius: "50%",
           marginLeft: isMobile ? "20px" : "none",
+          zIndex: 10, // Garante que o botão fique acima das imagens
         }}
         onClick={onClick}
       />
@@ -58,22 +57,22 @@ const CarDetail = () => {
   };
   const CustomNextArrow = (props: any) => {
     const { className, style, onClick } = props;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
     return (
       <div
         className={className}
         style={{
           ...style,
-          background: "red",
+          background: isMobile ? "none" : "red",
           color: "white",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          width: isMobile ? "50px" : "50px",
-          height: isMobile ? "50px" : "50px",
+          width: "50px",
+          height: "50px",
           borderRadius: "50%",
           marginRight: isMobile ? "20px" : "none",
+          zIndex: 10, // Garante que o botão fique acima das imagens
         }}
         onClick={onClick}
       />
@@ -146,7 +145,11 @@ const CarDetail = () => {
     <Container>
       <Slider {...settings} className="mb-6">
         {car?.images.map((image) => (
-          <img src={image.url} className="w-full h-96" key={image.name} />
+          <img
+            src={image.url}
+            className="w-full h-96 relative"
+            key={image.name}
+          />
         ))}
       </Slider>
       {car && (
