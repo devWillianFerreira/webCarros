@@ -32,53 +32,6 @@ const CarDetail = () => {
   const [slidesPerView, setSlidesPerView] = useState<number>(2);
   const [isMobile, setIsMobile] = useState(false);
 
-  const CustomPrevArrow = (props: any) => {
-    const { className, style, onClick } = props;
-
-    return (
-      <div
-        className={className}
-        style={{
-          ...style,
-          background: isMobile ? "none" : "red",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: isMobile ? "50px" : "50px",
-          height: isMobile ? "50px" : "50px",
-          borderRadius: "50%",
-          marginLeft: isMobile ? "20px" : "none",
-          zIndex: 10, // Garante que o botão fique acima das imagens
-        }}
-        onClick={onClick}
-      />
-    );
-  };
-  const CustomNextArrow = (props: any) => {
-    const { className, style, onClick } = props;
-
-    return (
-      <div
-        className={className}
-        style={{
-          ...style,
-          background: isMobile ? "none" : "red",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          marginRight: isMobile ? "20px" : "none",
-          zIndex: 10, // Garante que o botão fique acima das imagens
-        }}
-        onClick={onClick}
-      />
-    );
-  };
-
   useEffect(() => {
     async function loadCar() {
       try {
@@ -121,6 +74,7 @@ const CarDetail = () => {
         setIsMobile(window.innerWidth < 720);
         setSlidesPerView(1);
       } else {
+        setIsMobile(false);
         setSlidesPerView(2);
       }
     }
@@ -131,6 +85,52 @@ const CarDetail = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  const CustomPrevArrow = (props: any) => {
+    const { className, style, onClick } = props;
+
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          background: isMobile ? "none" : "red",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "50px",
+          height: "50px",
+          borderRadius: "100%",
+          zIndex: 10, // Garante que o botão fique acima das imagens
+          left: isMobile ? "0px" : "15px",
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+  const CustomNextArrow = (props: any) => {
+    const { className, style, onClick } = props;
+
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          background: isMobile ? "none" : "red",
+          color: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "50px",
+          height: "50px",
+          borderRadius: "50%",
+          zIndex: 10, // Garante que o botão fique acima das imagens
+          right: isMobile ? "0px" : "15px",
+        }}
+        onClick={onClick}
+      />
+    );
+  };
 
   const settings = {
     dots: true,
@@ -181,7 +181,11 @@ const CarDetail = () => {
           <p className="mb-4">{car?.description}</p>
           <strong>Telefone:</strong>
           <p>{car?.whatsapp}</p>
-          <a className="w-full bg-green-500 text-white flex items-center justify-center rounded-lg gap-2 my-6 h-11 text-xl font-medium cursor-pointer">
+          <a
+            className="w-full bg-green-500 text-white flex items-center justify-center rounded-lg gap-2 my-6 h-11 text-xl font-medium cursor-pointer"
+            href={`https://api.whatsapp.com/send?phone=${car.whatsapp}&text=Olá, vi o anúncio do ${car.name} no WebCarros e fiquei interessado. Gostaria de mais informações sobre o veículo e detalhes de pagamento. Aguardo sua resposta. Obrigado!" `}
+            target="_blank"
+          >
             <Phone color="white" />
             Enviar mensagem ao vendendor
           </a>
