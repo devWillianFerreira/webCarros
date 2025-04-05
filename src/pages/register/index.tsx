@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "../../services/supabaseConnection";
 import { useContext, useEffect } from "react";
 import { authContext } from "../../context/authContext";
+import toast from "react-hot-toast";
 
 // Criando validação com zod
 const schema = z.object({
@@ -55,6 +56,7 @@ const Register = () => {
             email: data.email,
             id: user.id, // Obtém o UID corretamente
           });
+          toast.success("Cadastro Realizado com Sucesso!");
           navigate("/dashboard", { replace: true });
         }
       })

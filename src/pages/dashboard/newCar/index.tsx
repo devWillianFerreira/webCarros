@@ -9,6 +9,7 @@ import { ChangeEvent, useContext, useState } from "react";
 import { authContext } from "../../../context/authContext";
 import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../../../services/supabaseConnection";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().nonempty("O nome é obrigatório").toUpperCase(),
@@ -53,7 +54,7 @@ const NewCar = () => {
       if (image.type === "image/jpeg" || image.type === "image/png") {
         await handleUploadFile(image);
       } else {
-        alert("Envie uma imagem jpeg ou png");
+        toast.error("Envie uma imagem jpeg ou png");
       }
     }
   }
@@ -99,7 +100,7 @@ const NewCar = () => {
   async function onSubmit(data: formData) {
     //Verificando se possui alguma imagem no
     if (carImages.length === 0) {
-      alert("Imagens são obrigatórias para cadastro de um carro");
+      toast.error("Imagens são obrigatórias para cadastro de um carro");
       return;
     }
 
@@ -122,15 +123,15 @@ const NewCar = () => {
 
       if (error) {
         console.error("Erro ao cadastrar o carro:", error.message);
-        alert("Erro ao cadastrar o carro!");
+        toast.error("Erro ao cadastrar Carro");
       } else {
         reset();
-        alert("Carro cadastrado com sucesso!");
+        toast.success("Carro cadastrado com sucesso!");
         setCarImage([]);
       }
     } catch (error) {
       console.error("Erro inesperado:", error);
-      alert("Erro inesperado ao cadastrar o carro!");
+      toast.error("Erro inesperado ao cadastrar o carro!");
     }
   }
 

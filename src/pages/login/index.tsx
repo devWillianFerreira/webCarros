@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "../../services/supabaseConnection";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 // Criando validação com zod
 const schema = z.object({
@@ -40,7 +41,7 @@ const Login = () => {
       if (error) {
         // Exibe mensagem de erro caso algo dê errado
         console.error("Erro na autenticação:", error.message);
-        alert(
+        toast.error(
           "Falha na autenticação. Verifique suas credenciais e tente novamente."
         );
         return;
@@ -51,7 +52,7 @@ const Login = () => {
         navigate("/dashboard", { replace: true });
       }
     } catch {
-      alert("Ocorreu um erro inesperado. Tente novamente mais tarde.");
+      toast.error("Ocorreu um erro inesperado. Tente novamente mais tarde.");
     }
   }
 
