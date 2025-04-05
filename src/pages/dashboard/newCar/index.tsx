@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { supabase } from "../../../services/supabaseConnection";
 
 const schema = z.object({
-  name: z.string().nonempty("O nome é obrigatório"),
+  name: z.string().nonempty("O nome é obrigatório").toUpperCase(),
   model: z.string().nonempty("O modelo é obrigatório"),
   year: z.string().nonempty("O ano é obrigatório"),
   km: z.string().nonempty("O km é obrigatório"),
