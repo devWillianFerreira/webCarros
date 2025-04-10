@@ -7,6 +7,8 @@ import CarDetail from "../pages/carDetail";
 import Login from "../pages/login";
 import Register from "../pages/register";
 import Private from "./private";
+import ForgetPassword from "../pages/forgetPassword";
+import ResetPassword from "../pages/resetPassword";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,14 @@ const router = createBrowserRouter([
   {
     element: <Register />,
     path: "/register",
+  },
+  {
+    element: <ForgetPassword />,
+    path: "/forgetPassword",
+  },
+  {
+    element: <ResetPassword />,
+    path: "/resetPassword",
   },
 ]);
 
