@@ -101,6 +101,12 @@ const Login = () => {
             Cadastre-se
           </Link>
         </span>
+        <span>
+          Esqueçeu a senha?{" "}
+          <Link to="/forgetPassword" className="font-medium ">
+            Clique aqui
+          </Link>
+        </span>
       </div>
     </Container>
   );
