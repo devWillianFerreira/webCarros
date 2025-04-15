@@ -66,7 +66,7 @@ const CarDetail = () => {
       }
     }
     loadCar();
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     function handleResize() {
@@ -138,17 +138,19 @@ const CarDetail = () => {
     speed: 500,
     slidesToShow: slidesPerView,
     slidesToScroll: 1,
+
     nextArrow: <CustomNextArrow />,
     prevArrow: <CustomPrevArrow />,
   };
   return (
     <Container>
-      <Slider {...settings} className="mb-6">
+      <Slider key={`slider-${slidesPerView}`} {...settings} className="mb-6">
         {car?.images.map((image) => (
           <img
             src={image.url}
             className="w-full h-96 relative"
             key={image.name}
+            onLoad={() => console.log("Carregada")}
           />
         ))}
       </Slider>
