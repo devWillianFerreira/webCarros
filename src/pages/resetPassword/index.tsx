@@ -37,7 +37,7 @@ const ResetPassword = () => {
         password: newPassword,
       });
       if (error) {
-        alert("Ocorreu um erro. Por favor, tente novamente.");
+        toast.error("Ocorreu um erro. Por favor, tente novamente.");
       } else {
         toast.success("Senha redefinida com sucesso!");
         navigate("/"); // Redireciona para a página inicial ou de login
