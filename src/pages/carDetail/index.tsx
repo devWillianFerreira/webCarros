@@ -187,7 +187,7 @@ const CarDetail = () => {
             target="_blank"
           >
             <Phone color="white" />
-            Enviar mensagem ao vendendor
+            Enviar mensagem ao vendedor
           </a>
         </main>
       )}
