@@ -14,7 +14,7 @@ const ForgetPassword = () => {
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(emailUser, {
-      redirectTo: "http://localhost:5173/resetPassword",
+      redirectTo: "https://web-carros-peach.vercel.app/resetPassword",
     });
     if (error) {
       toast.error("Erro ao enviar o email de redefinição, tente novamente!");
