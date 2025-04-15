@@ -150,7 +150,6 @@ const CarDetail = () => {
             src={image.url}
             className="w-full h-96 relative"
             key={image.name}
-            onLoad={() => console.log("Carregada")}
           />
         ))}
       </Slider>
