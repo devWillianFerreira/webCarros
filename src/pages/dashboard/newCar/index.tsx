@@ -88,10 +88,10 @@ const NewCar = () => {
 
   async function handleDeleteImage(item: carImageProps) {
     const userId = user?.id;
-
-    const uidImage = item.uid;
+    const uidImage = item.name;
     const filePath = `${userId}/${uidImage}`;
     await supabase.storage.from("images").remove([filePath]);
+
     setCarImage(
       carImages.filter((image) => image.previewUrl != item.previewUrl)
     );
