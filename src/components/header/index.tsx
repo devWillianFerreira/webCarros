@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { authContext } from "../../context/authContext";
 
 const Header = () => {
-  const { signed, LoadingAuth } = useContext(authContext);
+  const { signed, LoadingAuth, user } = useContext(authContext);
 
   return (
     <div className="flex w-full justify-center h-16 items-center bg-white drop-shadow mb-4">
@@ -14,13 +14,15 @@ const Header = () => {
           <img src={logoImg} alt="webCarros" />
         </Link>
         {!LoadingAuth && signed && (
-          <Link to="/dashboard">
+          <Link to="/dashboard" className="flex gap-2 items-center">
+            <p>Olá, {user?.name}</p>
             <User size={26} />
           </Link>
         )}
 
         {!LoadingAuth && !signed && (
-          <Link to="/login">
+          <Link to="/login" className="flex gap-2 items-center  ">
+            <p>Login</p>
             <LogInIcon size={26} />
           </Link>
         )}
